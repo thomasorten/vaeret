@@ -31,28 +31,6 @@
                                 <color key="textColor" red="0.9960784912109375" green="0.99215692281723022" blue="0.99215692281723022" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" id="yX3-kI-ucE">
-                                <rect key="frame" x="36" y="244" width="248" height="79"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Søk etter sted" minimumFontSize="17" id="1t5-hH-Qz8">
-                                        <rect key="frame" x="28" y="20" width="200" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="tintColor" red="0.99607849120000003" green="0.99215692280000001" blue="0.99215692280000001" alpha="1" colorSpace="deviceRGB"/>
-                                        <color key="textColor" red="0.9960784912109375" green="0.99215692281723022" blue="0.99215692281723022" alpha="1" colorSpace="deviceRGB"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="30"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                        <connections>
-                                            <outlet property="delegate" destination="vXZ-lx-hvc" id="vlA-3Y-CDY"/>
-                                        </connections>
-                                    </textField>
-                                    <view alpha="0.69999999999999973" contentMode="scaleToFill" id="aJb-td-dNT">
-                                        <rect key="frame" x="20" y="58" width="200" height="1"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    </view>
-                                </subviews>
-                            </view>
                             <view contentMode="scaleToFill" id="bu9-k4-QTc">
                                 <rect key="frame" x="79" y="313" width="152" height="43"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -71,12 +49,36 @@
                                     </button>
                                 </subviews>
                             </view>
+                            <view contentMode="scaleToFill" id="yX3-kI-ucE">
+                                <rect key="frame" x="36" y="244" width="248" height="249"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Søk etter sted" minimumFontSize="17" id="1t5-hH-Qz8" customClass="MPGTextField">
+                                        <rect key="frame" x="28" y="14" width="200" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="tintColor" red="0.99607849120000003" green="0.99215692280000001" blue="0.99215692280000001" alpha="1" colorSpace="deviceRGB"/>
+                                        <color key="textColor" red="0.9960784912109375" green="0.99215692281723022" blue="0.99215692281723022" alpha="1" colorSpace="deviceRGB"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="30"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="vXZ-lx-hvc" id="vlA-3Y-CDY"/>
+                                        </connections>
+                                    </textField>
+                                    <view alpha="0.69999999999999973" contentMode="scaleToFill" id="aJb-td-dNT">
+                                        <rect key="frame" x="20" y="58" width="200" height="1"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
+                                </subviews>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
                         <outlet property="findMeView" destination="bu9-k4-QTc" id="ojO-1l-FPW"/>
+                        <outlet property="placeTextField" destination="1t5-hH-Qz8" id="kxS-xN-bvZ"/>
                         <outlet property="searchPlaceView" destination="yX3-kI-ucE" id="73D-sI-zt4"/>
+                        <outlet property="underlineView" destination="aJb-td-dNT" id="ytp-Qb-QyS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

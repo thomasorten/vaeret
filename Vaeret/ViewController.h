@@ -7,9 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MPGTextField.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <UITextFieldDelegate, MPGTextFieldDelegate>
+{
+    NSMutableArray *data;
+}
 
+@property (weak, nonatomic) IBOutlet MPGTextField *placeTextField;
 
 @end
 

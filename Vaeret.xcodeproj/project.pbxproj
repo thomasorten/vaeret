@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45AAB4BD19F85BF100F11615 /* places.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AAB4BC19F85BF100F11615 /* places.json */; };
 		45D80FC819F7AC8700582441 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D80FC719F7AC8700582441 /* main.m */; };
 		45D80FCB19F7AC8700582441 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D80FCA19F7AC8700582441 /* AppDelegate.m */; };
 		45D80FCE19F7AC8700582441 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D80FCD19F7AC8700582441 /* ViewController.m */; };
@@ -14,6 +15,7 @@
 		45D80FD319F7AC8700582441 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45D80FD219F7AC8700582441 /* Images.xcassets */; };
 		45D80FD619F7AC8700582441 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45D80FD419F7AC8700582441 /* LaunchScreen.xib */; };
 		45D80FE219F7AC8800582441 /* VaeretTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D80FE119F7AC8800582441 /* VaeretTests.m */; };
+		45D80FEE19F7E2AC00582441 /* MPGTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D80FED19F7E2AC00582441 /* MPGTextField.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		45AAB4BC19F85BF100F11615 /* places.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = places.json; sourceTree = "<group>"; };
 		45D80FC219F7AC8700582441 /* Vaeret.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vaeret.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D80FC619F7AC8700582441 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45D80FC719F7AC8700582441 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -40,6 +43,8 @@
 		45D80FDB19F7AC8700582441 /* VaeretTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VaeretTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D80FE019F7AC8800582441 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45D80FE119F7AC8800582441 /* VaeretTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VaeretTests.m; sourceTree = "<group>"; };
+		45D80FEC19F7E2AC00582441 /* MPGTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPGTextField.h; sourceTree = "<group>"; };
+		45D80FED19F7E2AC00582441 /* MPGTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPGTextField.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,10 +86,12 @@
 		45D80FC419F7AC8700582441 /* Vaeret */ = {
 			isa = PBXGroup;
 			children = (
+				45D80FEB19F7E2AC00582441 /* MPGTextField */,
 				45D80FC919F7AC8700582441 /* AppDelegate.h */,
 				45D80FCA19F7AC8700582441 /* AppDelegate.m */,
 				45D80FCC19F7AC8700582441 /* ViewController.h */,
 				45D80FCD19F7AC8700582441 /* ViewController.m */,
+				45AAB4BC19F85BF100F11615 /* places.json */,
 				45D80FCF19F7AC8700582441 /* Main.storyboard */,
 				45D80FD219F7AC8700582441 /* Images.xcassets */,
 				45D80FD419F7AC8700582441 /* LaunchScreen.xib */,
@@ -117,6 +124,15 @@
 				45D80FE019F7AC8800582441 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		45D80FEB19F7E2AC00582441 /* MPGTextField */ = {
+			isa = PBXGroup;
+			children = (
+				45D80FEC19F7E2AC00582441 /* MPGTextField.h */,
+				45D80FED19F7E2AC00582441 /* MPGTextField.m */,
+			);
+			path = MPGTextField;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -202,6 +218,7 @@
 				45D80FD119F7AC8700582441 /* Main.storyboard in Resources */,
 				45D80FD619F7AC8700582441 /* LaunchScreen.xib in Resources */,
 				45D80FD319F7AC8700582441 /* Images.xcassets in Resources */,
+				45AAB4BD19F85BF100F11615 /* places.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +238,7 @@
 			files = (
 				45D80FCE19F7AC8700582441 /* ViewController.m in Sources */,
 				45D80FCB19F7AC8700582441 /* AppDelegate.m in Sources */,
+				45D80FEE19F7E2AC00582441 /* MPGTextField.m in Sources */,
 				45D80FC819F7AC8700582441 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -414,6 +432,7 @@
 				45D80FE719F7AC8800582441 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		45D80FE819F7AC8800582441 /* Build configuration list for PBXNativeTarget "VaeretTests" */ = {
 			isa = XCConfigurationList;
@@ -422,6 +441,7 @@
 				45D80FEA19F7AC8800582441 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
