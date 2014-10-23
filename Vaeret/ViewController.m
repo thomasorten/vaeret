@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UIView *searchPlaceView;
 @property (weak, nonatomic) IBOutlet UIView *findMeView;
 @property (weak, nonatomic) IBOutlet UIView *underlineView;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 
 @property int initialScrollOffsetPosition;
 @property int initialFindMeScrollOffsetPosition;
@@ -207,6 +208,35 @@
 - (void)didFinishAnimation:(CustomProgressView*)progressView
 {
     [progressView removeFromSuperview];
+
+    [self performSelector:@selector(animateTitles) withObject:nil afterDelay:0.5];
+}
+
+-(void)animateTitles
+{
+    [UIView animateWithDuration:0.3 animations:^{
+        self.underlineView.alpha = 0;
+        self.titleLabel.alpha = 0;
+    }];
+
+    [UIView animateWithDuration:0.6 animations:^{
+
+        [self.placeTextField sizeToFit];
+        [self.placeTextField setEnabled:NO];
+
+        CGRect frame;
+        // move our subView to its new position
+        frame = self.searchPlaceView.frame;
+        frame.origin.y = 50;
+        frame.origin.x = ([[UIScreen mainScreen] bounds].size.width-self.placeTextField.frame.size.width)/2;
+        self.searchPlaceView.frame=frame;
+
+        CGRect frame2;
+        // move our subView to its new position
+        frame2 = self.findMeView.frame;
+        frame2.origin.y = [[UIScreen mainScreen] bounds].size.height+50;
+        self.findMeView.frame=frame2;
+    }];
 }
 
 
