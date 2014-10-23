@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UIView *findMeView;
 @property (weak, nonatomic) IBOutlet UIView *underlineView;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *copyrightLabel;
 
 @property int initialScrollOffsetPosition;
 @property int initialFindMeScrollOffsetPosition;
@@ -42,7 +43,31 @@
                                    initWithTarget:self
                                    action:@selector(dismissKeyboard)];
     
-     [self.view addGestureRecognizer:tap];
+    [self.view addGestureRecognizer:tap];
+
+    [self performSelector:@selector(animateLogo) withObject:nil afterDelay:0.5];
+}
+
+-(void)animateLogo
+{
+    [UIView animateWithDuration:0.6 animations:^{
+        CGRect frame;
+        // move our subView to its new position
+        frame=self.titleLabel.frame;
+        frame.origin.y = 48;
+        self.titleLabel.frame=frame;
+    }];
+
+    [self performSelector:@selector(fadeInSearch) withObject:nil afterDelay:0.5];
+}
+
+-(void)fadeInSearch
+{
+    [UIView animateWithDuration:0.6 animations:^{
+        self.searchPlaceView.alpha = 1.0;
+        self.findMeView.alpha = 1.0;
+        self.copyrightLabel.alpha = 0.8;
+    }];
 }
 
 // Call this method somewhere in your view controller setup code.
