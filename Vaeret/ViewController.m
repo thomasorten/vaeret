@@ -18,9 +18,15 @@
 @property (weak, nonatomic) IBOutlet UIView *underlineView;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *copyrightLabel;
+@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 
 @property int initialScrollOffsetPosition;
 @property int initialFindMeScrollOffsetPosition;
+@property int initialSearchViewYPosition;
+@property int initialSearchViewXPosition;
+@property int initialFindMeViewYPosition;
+@property int initialCancelButtonXPosition;
+@property CGRect initialTextFieldFrame;
 
 @end
 
@@ -45,6 +51,12 @@
     
     [self.view addGestureRecognizer:tap];
 
+    self.initialSearchViewYPosition = self.searchPlaceView.frame.origin.y;
+    self.initialSearchViewXPosition = self.searchPlaceView.frame.origin.x;
+    self.initialFindMeViewYPosition = self.findMeView.frame.origin.y;
+    self.initialCancelButtonXPosition = self.cancelButton.frame.origin.x;
+    self.initialTextFieldFrame = self.placeTextField.frame;
+
     [self performSelector:@selector(animateLogo) withObject:nil afterDelay:0.5];
 }
 
@@ -59,6 +71,16 @@
     }];
 
     [self performSelector:@selector(fadeInSearch) withObject:nil afterDelay:0.5];
+}
+
+- (IBAction)onCancelButtonPressed:(id)sender
+{
+    [self animateTitles:YES];
+}
+
+- (IBAction)onLocateMeButtonPressed:(id)sender
+{
+
 }
 
 -(void)fadeInSearch
@@ -234,34 +256,62 @@
 {
     [progressView removeFromSuperview];
 
-    [self performSelector:@selector(animateTitles) withObject:nil afterDelay:0.5];
+    [self performSelector:@selector(animateTitles:) withObject:nil afterDelay:0.5];
 }
 
--(void)animateTitles
+-(void)animateTitles:(BOOL)reverse
 {
+    int searchViewYPosition = self.initialSearchViewYPosition;
+    int searchViewXPosition = self.initialSearchViewXPosition;
+    int findMeYPosition = self.initialFindMeViewYPosition;
+    int cancelButtonXPosition = self.initialCancelButtonXPosition;
+
+    if (!reverse) {
+        searchViewYPosition = 50;
+        findMeYPosition = [[UIScreen mainScreen] bounds].size.height+50;
+    }
+
     [UIView animateWithDuration:0.3 animations:^{
-        self.underlineView.alpha = 0;
-        self.titleLabel.alpha = 0;
+        self.underlineView.alpha = reverse ? 1 : 0;
+        self.titleLabel.alpha = reverse ? 1 : 0;
     }];
 
     [UIView animateWithDuration:0.6 animations:^{
 
         [self.placeTextField sizeToFit];
-        [self.placeTextField setEnabled:NO];
+        [self.placeTextField setEnabled:reverse];
 
         CGRect frame;
         // move our subView to its new position
         frame = self.searchPlaceView.frame;
-        frame.origin.y = 50;
-        frame.origin.x = ([[UIScreen mainScreen] bounds].size.width-self.placeTextField.frame.size.width)/2;
+        frame.origin.y = searchViewYPosition;
+        frame.origin.x = reverse ? searchViewXPosition : (([[UIScreen mainScreen] bounds].size.width-self.placeTextField.frame.size.width)/2)-17;
         self.searchPlaceView.frame=frame;
 
         CGRect frame2;
         // move our subView to its new position
         frame2 = self.findMeView.frame;
-        frame2.origin.y = [[UIScreen mainScreen] bounds].size.height+50;
+        frame2.origin.y = findMeYPosition;
         self.findMeView.frame=frame2;
+
+        CGRect frame3;
+        // move our subView to its new position
+        frame3 = self.cancelButton.frame;
+        frame3.origin.x = reverse ? cancelButtonXPosition : (([[UIScreen mainScreen] bounds].size.width+self.placeTextField.frame.size.width)/2);
+        self.cancelButton.frame=frame3;
+
+        self.cancelButton.alpha = reverse ? 0 : 1;
     }];
+
+    if (reverse) {
+        self.placeTextField.frame= self.initialTextFieldFrame;
+        [self performSelector:@selector(resetTextField) withObject:nil afterDelay:0.6];
+    }
+}
+
+-(void)resetTextField
+{
+    self.placeTextField.text = defaultSearchString;
 }
 
 
