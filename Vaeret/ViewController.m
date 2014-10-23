@@ -7,10 +7,11 @@
 //
 
 #import "ViewController.h"
+#import "WeatherCollectionViewCell.h"
 
 #define defaultSearchString @"Søk etter sted"
 
-@interface ViewController () <UITextViewDelegate>
+@interface ViewController () <UITextViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property(assign) NSInteger currentTaskId;
 @property (weak, nonatomic) IBOutlet UIView *searchPlaceView;
@@ -20,10 +21,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *copyrightLabel;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 
-@property (weak, nonatomic) IBOutlet UIView *weather812View;
-@property (weak, nonatomic) IBOutlet UILabel *weatherIcon812Label;
-
 @property (weak, nonatomic) IBOutlet UIView *weatherGridView;
+
+@property (weak, nonatomic) IBOutlet UICollectionView *weatherCollectionView;
 
 @property (weak, nonatomic) IBOutlet UILabel *weatherGridOneLabel;
 @property (weak, nonatomic) IBOutlet UILabel *weatherGridTwoLabel;
@@ -49,7 +49,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self.weatherIcon812Label setText:@"\uf002"];
     [self.weatherGridOneLabel setText:@"\uf002"];
     [self.weatherGridTwoLabel setText:@"\uf002"];
     [self.weatherGridThreeLabel setText:@"\uf002"];
@@ -336,7 +335,7 @@
 {
     BOOL isReverse = [reverse boolValue];
     [UIView animateWithDuration:0.6 animations:^{
-        self.weather812View.alpha = isReverse ? 0 : 1;
+        self.weatherCollectionView.alpha = isReverse ? 0 : 1;
         self.weatherGridView.alpha = isReverse ? 0 : 1;
     }];
 }
@@ -344,6 +343,30 @@
 -(void)resetTextField
 {
     self.placeTextField.text = defaultSearchString;
+}
+
+#pragma mark - UICollectionViewDataSource
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView
+     numberOfItemsInSection:(NSInteger)section
+{
+    return 6;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    WeatherCollectionViewCell *weatherCell =
+    [self.weatherCollectionView dequeueReusableCellWithReuseIdentifier:@"WeatherCell"
+                                              forIndexPath:indexPath];
+    [weatherCell.weatherIcon812Label setText:@"\uf002"];
+    
+    return weatherCell;
 }
 
 

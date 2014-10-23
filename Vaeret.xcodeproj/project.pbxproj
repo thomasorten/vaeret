@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4573CD3E19F9141A00E1071B /* weathericons-regular-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4573CD3D19F9141A00E1071B /* weathericons-regular-webfont.ttf */; };
+		4573CD4819F9485700E1071B /* WeatherCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4573CD4719F9485700E1071B /* WeatherCollectionViewCell.m */; };
 		45AAB4BD19F85BF100F11615 /* places.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AAB4BC19F85BF100F11615 /* places.json */; };
 		45AAB4C019F8D9E900F11615 /* CustomProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 45AAB4BF19F8D9E900F11615 /* CustomProgressView.m */; };
 		45D80FC819F7AC8700582441 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D80FC719F7AC8700582441 /* main.m */; };
@@ -32,6 +33,8 @@
 
 /* Begin PBXFileReference section */
 		4573CD3D19F9141A00E1071B /* weathericons-regular-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "weathericons-regular-webfont.ttf"; path = "MPGTextField/weathericons-regular-webfont.ttf"; sourceTree = "<group>"; };
+		4573CD4619F9485700E1071B /* WeatherCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeatherCollectionViewCell.h; path = ../WeatherCollectionViewCell.h; sourceTree = "<group>"; };
+		4573CD4719F9485700E1071B /* WeatherCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeatherCollectionViewCell.m; path = ../WeatherCollectionViewCell.m; sourceTree = "<group>"; };
 		45AAB4BC19F85BF100F11615 /* places.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = places.json; sourceTree = "<group>"; };
 		45AAB4BE19F8D9E900F11615 /* CustomProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomProgressView.h; sourceTree = "<group>"; };
 		45AAB4BF19F8D9E900F11615 /* CustomProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomProgressView.m; sourceTree = "<group>"; };
@@ -92,6 +95,8 @@
 			isa = PBXGroup;
 			children = (
 				45D80FEB19F7E2AC00582441 /* MPGTextField */,
+				4573CD4619F9485700E1071B /* WeatherCollectionViewCell.h */,
+				4573CD4719F9485700E1071B /* WeatherCollectionViewCell.m */,
 				45D80FC919F7AC8700582441 /* AppDelegate.h */,
 				45D80FCA19F7AC8700582441 /* AppDelegate.m */,
 				45D80FCC19F7AC8700582441 /* ViewController.h */,
@@ -250,6 +255,7 @@
 				45D80FCB19F7AC8700582441 /* AppDelegate.m in Sources */,
 				45D80FEE19F7E2AC00582441 /* MPGTextField.m in Sources */,
 				45D80FC819F7AC8700582441 /* main.m in Sources */,
+				4573CD4819F9485700E1071B /* WeatherCollectionViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
