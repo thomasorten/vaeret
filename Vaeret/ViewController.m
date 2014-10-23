@@ -20,6 +20,18 @@
 @property (weak, nonatomic) IBOutlet UILabel *copyrightLabel;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 
+@property (weak, nonatomic) IBOutlet UIView *weather812View;
+@property (weak, nonatomic) IBOutlet UILabel *weatherIcon812Label;
+
+@property (weak, nonatomic) IBOutlet UIView *weatherGridView;
+
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridOneLabel;
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridTwoLabel;
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridThreeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridFourLabel;
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridFiveLabel;
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridSixLabel;
+
 @property int initialScrollOffsetPosition;
 @property int initialFindMeScrollOffsetPosition;
 @property int initialSearchViewYPosition;
@@ -36,6 +48,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    [self.weatherIcon812Label setText:@"\uf002"];
+    [self.weatherGridOneLabel setText:@"\uf002"];
+    [self.weatherGridTwoLabel setText:@"\uf002"];
+    [self.weatherGridThreeLabel setText:@"\uf002"];
+    [self.weatherGridFourLabel setText:@"\uf002"];
+    [self.weatherGridFiveLabel setText:@"\uf002"];
+    [self.weatherGridSixLabel setText:@"\uf002"];
 
     [self generateData];
 
@@ -256,7 +276,7 @@
 {
     [progressView removeFromSuperview];
 
-    [self performSelector:@selector(animateTitles:) withObject:nil afterDelay:0.5];
+    [self performSelector:@selector(animateTitles:) withObject:nil afterDelay:0.2];
 }
 
 -(void)animateTitles:(BOOL)reverse
@@ -306,7 +326,19 @@
     if (reverse) {
         self.placeTextField.frame= self.initialTextFieldFrame;
         [self performSelector:@selector(resetTextField) withObject:nil afterDelay:0.6];
+        [self performSelector:@selector(animateWeatherViews:) withObject:[NSNumber numberWithBool:YES] afterDelay:0];
+    } else {
+        [self performSelector:@selector(animateWeatherViews:) withObject:[NSNumber numberWithBool:NO] afterDelay:0.8];
     }
+}
+
+- (void)animateWeatherViews:(NSNumber *)reverse
+{
+    BOOL isReverse = [reverse boolValue];
+    [UIView animateWithDuration:0.6 animations:^{
+        self.weather812View.alpha = isReverse ? 0 : 1;
+        self.weatherGridView.alpha = isReverse ? 0 : 1;
+    }];
 }
 
 -(void)resetTextField
