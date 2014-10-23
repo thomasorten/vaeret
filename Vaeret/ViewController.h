@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "MPGTextField.h"
+#import "CustomProgressView.h"
 
-@interface ViewController : UIViewController <UITextFieldDelegate, MPGTextFieldDelegate>
+@interface ViewController : UIViewController <UITextFieldDelegate, MPGTextFieldDelegate, CustomProgressViewDelegate>
 {
     NSMutableArray *data;
+    CustomProgressView *customProgressView;
 }
 
 @property (weak, nonatomic) IBOutlet MPGTextField *placeTextField;

@@ -33,8 +33,7 @@
 
     [self.placeTextField setDelegate:self];
 
-    [self.placeTextField setBackgroundColor:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.6]];
-    [self.placeTextField setPopoverSize:CGRectMake(self.underlineView.frame.origin.x, (self.underlineView.frame.origin.y+self.underlineView.frame.size.height), self.underlineView.frame.size.width, 135)];
+    [self.placeTextField setBackgroundColor:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.7]];
 
     [self registerForKeyboardNotifications];
 
@@ -89,6 +88,9 @@
             frame2.origin.y = (findMeFrame.origin.y)+(aRect.size.height);
 
             self.findMeView.frame=frame2;
+
+            // Place popover according to new position
+            [self.placeTextField setPopoverSize:CGRectMake(self.searchPlaceView.frame.origin.x, (self.searchPlaceView.frame.origin.y+self.placeTextField.frame.size.height), self.underlineView.frame.size.width, 135)];
         }];
     }
 }
@@ -189,8 +191,22 @@
 - (void)textField:(MPGTextField *)textField didEndEditingWithSelection:(NSDictionary *)result
 {
         if ([textField isEqual:self.placeTextField]) {
-            //
+            customProgressView = [[CustomProgressView alloc] init];
+            customProgressView.delegate = self;
+            [self.view addSubview:customProgressView];
+
+            [self performSelector:@selector(setProgress:) withObject:[NSNumber numberWithFloat:1.0] afterDelay:0.1];
         }
+}
+
+-(void)setProgress:(NSNumber*)value
+{
+    [customProgressView performSelectorOnMainThread:@selector(setProgress:) withObject:value waitUntilDone:NO];
+}
+
+- (void)didFinishAnimation:(CustomProgressView*)progressView
+{
+    [progressView removeFromSuperview];
 }
 
 

@@ -50,11 +50,16 @@
                                 </subviews>
                             </view>
                             <view contentMode="scaleToFill" id="yX3-kI-ucE">
-                                <rect key="frame" x="36" y="244" width="248" height="249"/>
+                                <rect key="frame" x="56" y="249" width="200" height="56"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
+                                    <view alpha="0.69999999999999973" contentMode="scaleToFill" id="aJb-td-dNT">
+                                        <rect key="frame" x="0.0" y="53" width="200" height="1"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Søk etter sted" minimumFontSize="17" id="1t5-hH-Qz8" customClass="MPGTextField">
-                                        <rect key="frame" x="28" y="14" width="200" height="42"/>
+                                        <rect key="frame" x="4" y="-1" width="193" height="54"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="tintColor" red="0.99607849120000003" green="0.99215692280000001" blue="0.99215692280000001" alpha="1" colorSpace="deviceRGB"/>
                                         <color key="textColor" red="0.9960784912109375" green="0.99215692281723022" blue="0.99215692281723022" alpha="1" colorSpace="deviceRGB"/>
@@ -64,11 +69,6 @@
                                             <outlet property="delegate" destination="vXZ-lx-hvc" id="vlA-3Y-CDY"/>
                                         </connections>
                                     </textField>
-                                    <view alpha="0.69999999999999973" contentMode="scaleToFill" id="aJb-td-dNT">
-                                        <rect key="frame" x="20" y="58" width="200" height="1"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    </view>
                                 </subviews>
                             </view>
                         </subviews>

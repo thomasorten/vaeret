@@ -189,7 +189,9 @@ NSArray *data;
         else{
             [tableViewController.tableView setFrame:self.popoverSize];
         }
-        [[self superview] addSubview:tableViewController.tableView];
+        UIWindow* mainWindow = [[UIApplication sharedApplication] keyWindow];
+        [mainWindow addSubview:tableViewController.tableView];
+       // [[self superview] addSubview:tableViewController.tableView];
         tableViewController.tableView.alpha = 0.0;
         [UIView animateWithDuration:0.3
                          animations:^{
