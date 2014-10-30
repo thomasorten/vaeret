@@ -81,13 +81,24 @@
 
 -(void)animateLogo
 {
-    [UIView animateWithDuration:0.6 animations:^{
-        CGRect frame;
-        // move our subView to its new position
-        frame=self.titleLabel.frame;
-        frame.origin.y = 48;
-        self.titleLabel.frame=frame;
+    [self.titleLabel.constraints enumerateObjectsUsingBlock:^(NSLayoutConstraint *constraint, NSUInteger idx, BOOL *stop) {
+        if ((constraint.firstItem == self.titleLabel) &&   (constraint.firstAttribute == NSLayoutAttributeCenterY)) {
+            constraint.constant = 48.0;
+        }
     }];
+
+    [UIView animateWithDuration:0.5 animations:^{
+        [self.view layoutIfNeeded];
+    }];
+
+
+//    [UIView animateWithDuration:0.6 animations:^{
+//        CGRect frame;
+//        // move our subView to its new position
+//        frame=self.titleLabel.frame;
+//        frame.origin.y = 48;
+//        self.titleLabel.frame=frame;
+//    }];
 
     [self performSelector:@selector(fadeInSearch) withObject:nil afterDelay:0.5];
 }
@@ -367,6 +378,11 @@
     [weatherCell.weatherIcon812Label setText:@"\uf002"];
     
     return weatherCell;
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    
 }
 
 
