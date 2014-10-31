@@ -55,8 +55,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self.weatherCollectionView setCollectionViewLayout:[[CoverFlowLayout alloc] init]];
-
     self.screenWidth = [[UIScreen mainScreen] bounds].size.width;
     self.screenHeight = [[UIScreen mainScreen] bounds].size.height;
 
@@ -93,12 +91,15 @@
         make.width.mas_equalTo(self.screenWidth);
         make.height.mas_equalTo(self.screenHeight/2);
         make.centerX.equalTo(self.view);
-        make.centerY.equalTo(self.view).centerOffset(CGPointMake(0, -70));
+        make.centerY.equalTo(self.view).centerOffset(CGPointMake(0, -100));
     }];
     [self.cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(58);
         self.cancelButtonXConstraint = make.centerX.equalTo(self.view).centerOffset(CGPointMake((self.placeTextField.frame.size.width/2)+10, 0));
     }];
+
+
+    [self.weatherCollectionView setCollectionViewLayout:[[CoverFlowLayout alloc] init]];
 
     [self generateData];
 

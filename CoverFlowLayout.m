@@ -17,10 +17,10 @@
 
 @implementation CoverFlowLayout
 
-#define ACTIVE_DISTANCE 100
-#define TRANSLATE_DISTANCE 100
-#define ZOOM_FACTOR 0.3
-#define FLOW_OFFSET 40
+#define ACTIVE_DISTANCE 750
+#define TRANSLATE_DISTANCE 187.5
+#define ZOOM_FACTOR 0.2
+#define FLOW_OFFSET -187.5
 
 - (id)init
 {
@@ -32,8 +32,7 @@
 
         self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         self.itemSize = (CGSize){297, 223};
-        self.minimumLineSpacing = -51;
-        self.minimumInteritemSpacing = 200;
+        self.minimumLineSpacing = 78;
     }
     return self;
 }
