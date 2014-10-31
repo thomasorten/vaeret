@@ -9,10 +9,11 @@
 #import "ViewController.h"
 #import "WeatherCollectionViewCell.h"
 #import "Masonry.h"
+#import "CoverFlowLayout.h"
 
 #define defaultSearchString @"Søk etter sted"
 
-@interface ViewController () <UITextViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
+@interface ViewController () <UITextViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property(assign) NSInteger currentTaskId;
 
@@ -54,6 +55,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    [self.weatherCollectionView setCollectionViewLayout:[[CoverFlowLayout alloc] init]];
+
     self.screenWidth = [[UIScreen mainScreen] bounds].size.width;
     self.screenHeight = [[UIScreen mainScreen] bounds].size.height;
 
@@ -87,6 +90,8 @@
         make.centerY.equalTo(self.view).centerOffset(CGPointMake(0, self.weatherGridView.frame.size.height));
     }];
     [self.weatherCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(self.screenWidth);
+        make.height.mas_equalTo(self.screenHeight/2);
         make.centerX.equalTo(self.view);
         make.centerY.equalTo(self.view).centerOffset(CGPointMake(0, -70));
     }];
@@ -351,11 +356,5 @@
     
     return weatherCell;
 }
-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
-{
-    
-}
-
 
 @end
