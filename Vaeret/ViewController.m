@@ -40,6 +40,7 @@
 @property (nonatomic, strong) MASConstraint *searchCenterYConstraint;
 @property (nonatomic, strong) MASConstraint *searchCenterXConstraint;
 @property (nonatomic, strong) MASConstraint *findMeCenterYConstraint;
+@property (nonatomic, strong) MASConstraint *cancelButtonXConstraint;
 
 @property float screenHeight;
 @property float screenWidth;
@@ -88,6 +89,10 @@
     [self.weatherCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.view);
         make.centerY.equalTo(self.view).centerOffset(CGPointMake(0, -70));
+    }];
+    [self.cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(58);
+        self.cancelButtonXConstraint = make.centerX.equalTo(self.view).centerOffset(CGPointMake((self.placeTextField.frame.size.width/2)+10, 0));
     }];
 
     [self generateData];
@@ -291,10 +296,7 @@
             self.searchCenterXConstraint.centerOffset(CGPointMake(((initialWidth-newWidth)/2)-17, 0));
         }
 
-        [self.cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(58);
-            make.left.mas_equalTo(((self.screenWidth+newWidth)/2)-5);
-        }];
+        self.cancelButtonXConstraint.centerOffset(CGPointMake((self.placeTextField.frame.size.width/2)+10, 0));
 
         self.cancelButton.alpha = reverse ? 0 : 1;
 
