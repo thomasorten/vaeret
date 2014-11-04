@@ -117,7 +117,7 @@
                                                             <color key="textColor" red="0.9960784912109375" green="0.99215692281723022" blue="0.99215692281723022" alpha="1" colorSpace="deviceRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Kl. 08 - 12" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iMo-73-OKZ">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Kl. 00 - 00" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iMo-73-OKZ">
                                                             <rect key="frame" x="8" y="0.0" width="80" height="21"/>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                                             <color key="textColor" red="0.9960784912109375" green="0.99215692281723022" blue="0.99215692281723022" alpha="1" colorSpace="deviceRGB"/>
@@ -135,6 +135,9 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <connections>
+                                            <outlet property="degreeLabel" destination="i6o-v4-Vej" id="IfU-9y-uYb"/>
+                                            <outlet property="rainLabel" destination="4d2-hj-f9Y" id="3FG-tv-2Ix"/>
+                                            <outlet property="timeLabel" destination="iMo-73-OKZ" id="gPe-kZ-obg"/>
                                             <outlet property="weather812View" destination="psn-B0-tCV" id="JHu-fj-UXb"/>
                                             <outlet property="weatherIcon812Label" destination="vC7-Pj-Rpt" id="CQI-t1-Ydr"/>
                                         </connections>

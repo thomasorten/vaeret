@@ -12,5 +12,8 @@
 
 @property (weak, nonatomic) IBOutlet UIView *weather812View;
 @property (weak, nonatomic) IBOutlet UILabel *weatherIcon812Label;
+@property (weak, nonatomic) IBOutlet UILabel *timeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *degreeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *rainLabel;
 
 @end

@@ -11,11 +11,17 @@
 #import "Masonry.h"
 #import "CoverFlowLayout.h"
 
+#define kLatestUpdatekey @"Latest Update"
 #define defaultSearchString @"Søk etter sted"
 
 @interface ViewController () <UITextViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property(assign) NSInteger currentTaskId;
+
+@property NSMutableArray *savedPlacesArray;
+@property NSMutableArray *cellInfoArray;
+
+@property NSInteger timeFrame;
 
 @property (weak, nonatomic) IBOutlet UIView *searchPlaceView;
 @property (weak, nonatomic) IBOutlet UIView *findMeView;
@@ -53,6 +59,7 @@
 @synthesize currentTaskId;
 
 - (void)viewDidLoad {
+
     [super viewDidLoad];
 
     self.screenWidth = [[UIScreen mainScreen] bounds].size.width;
@@ -65,6 +72,8 @@
     [self.weatherGridFiveLabel setText:@"\uf002"];
     [self.weatherGridSixLabel setText:@"\uf002"];
 
+    // Cells
+    self.cellInfoArray = [[NSMutableArray alloc] initWithArray:@[@{@"time": @"00 - 04"}, @{@"time": @"04 - 08"}, @{@"time": @"08 - 12"}, @{@"time": @"12 - 16"}, @{@"time": @"16 - 20"}, @{@"time": @"20 - 00"}]];
 
     // Constraints
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -98,7 +107,6 @@
         self.cancelButtonXConstraint = make.centerX.equalTo(self.view).centerOffset(CGPointMake((self.placeTextField.frame.size.width/2)+10, 0));
     }];
 
-
     [self.weatherCollectionView setCollectionViewLayout:[[CoverFlowLayout alloc] init]];
 
     [self generateData];
@@ -118,6 +126,13 @@
     [self performSelector:@selector(animateLogo) withObject:nil afterDelay:0.5];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    // Already saved a place?
+    [self load];
+}
+
 -(void)animateLogo
 {
     self.logoCenterYConstraint.centerOffset(CGPointMake(0, -self.screenHeight*0.35));
@@ -130,6 +145,13 @@
 
 - (IBAction)onCancelButtonPressed:(id)sender
 {
+    [self.savedPlacesArray removeAllObjects];
+
+    self.findMeView.hidden = NO;
+    self.underlineView.hidden = NO;
+    self.searchPlaceView.hidden = NO;
+    self.titleLabel.hidden = NO;
+
     [self animateTitles:YES];
 }
 
@@ -257,12 +279,18 @@
 - (void)textField:(MPGTextField *)textField didEndEditingWithSelection:(NSDictionary *)result
 {
         if ([textField isEqual:self.placeTextField]) {
-            customProgressView = [[CustomProgressView alloc] init];
-            customProgressView.delegate = self;
-            [self.view addSubview:customProgressView];
-
-            [self performSelector:@selector(setProgress:) withObject:[NSNumber numberWithFloat:1.0] afterDelay:0.1];
+            [self save:textField.text];
+            [self initLoader];
         }
+}
+
+- (void)initLoader
+{
+    customProgressView = [[CustomProgressView alloc] init];
+    customProgressView.delegate = self;
+    [self.view addSubview:customProgressView];
+
+    [self performSelector:@selector(setProgress:) withObject:[NSNumber numberWithFloat:1.0] afterDelay:0.1];
 }
 
 -(void)setProgress:(NSNumber*)value
@@ -279,11 +307,19 @@
 
 -(void)animateTitles:(BOOL)reverse
 {
-    [UIView animateWithDuration:0.3 animations:^{
-        self.underlineView.alpha = reverse ? 1 : 0;
+
+    if (![self.findMeView isHidden] && ![self.underlineView isHidden]) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.underlineView.alpha = reverse ? 1 : 0;
+            self.titleLabel.alpha = reverse ? 1 : 0;
+            self.findMeView.alpha = reverse ? 1 : 0;
+        }];
+    } else {
+        self.searchPlaceView.hidden = NO;
+        self.searchCenterYConstraint.centerOffset(CGPointMake(0, -self.screenHeight*0.38));
         self.titleLabel.alpha = reverse ? 1 : 0;
-        self.findMeView.alpha = reverse ? 1 : 0;
-    }];
+        [self.view layoutIfNeeded];
+    }
 
     [UIView animateWithDuration:0.6 animations:^{
 
@@ -344,18 +380,91 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section
 {
-    return 6;
+    return [self.cellInfoArray count];
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
-                  cellForItemAtIndexPath:(NSIndexPath *)indexPath
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    WeatherCollectionViewCell *weatherCell =
-    [self.weatherCollectionView dequeueReusableCellWithReuseIdentifier:@"WeatherCell"
-                                              forIndexPath:indexPath];
+    WeatherCollectionViewCell *weatherCell = [self.weatherCollectionView dequeueReusableCellWithReuseIdentifier:@"WeatherCell" forIndexPath:indexPath];
     [weatherCell.weatherIcon812Label setText:@"\uf002"];
-    
+
+    weatherCell.timeLabel.text = [NSString stringWithFormat:@"Kl. %@", [self.cellInfoArray objectAtIndex:indexPath.row][@"time"]];
+
     return weatherCell;
 }
+
+- (void)save:(NSString *)place
+{
+    [self.savedPlacesArray addObject:place];
+    if ([self.savedPlacesArray count] > 4) {
+        self.savedPlacesArray = (NSMutableArray *) [self.savedPlacesArray subarrayWithRange:NSMakeRange(0, 5)];
+    }
+
+    NSURL *places = [[self documentsDirectory] URLByAppendingPathComponent:@"vaeret.plist"];
+    [self.savedPlacesArray writeToURL:places atomically:YES];
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[NSDate date] forKey:kLatestUpdatekey];
+    [defaults synchronize];
+}
+
+- (void)load
+{
+    [self setRightTime];
+
+    NSURL *places = [[self documentsDirectory] URLByAppendingPathComponent:@"vaeret.plist"];
+    self.savedPlacesArray = [NSMutableArray arrayWithContentsOfURL:places];
+    if (!self.savedPlacesArray)
+    {
+        self.savedPlacesArray = [NSMutableArray array];
+        // No last searches
+
+    } else {
+        // Exists
+        self.placeTextField.text = [self.savedPlacesArray lastObject];
+        // Show some stuff
+        self.searchPlaceView.hidden = YES;
+        self.titleLabel.hidden = YES;
+        self.findMeView.hidden = YES;
+        self.underlineView.hidden = YES;
+        [self initLoader];
+    }
+}
+
+- (NSURL *)documentsDirectory
+{
+    return [[[NSFileManager defaultManager]URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask]firstObject];
+}
+
+- (void)setRightTime
+{
+    NSDateComponents *currentTime = [self currentTime];
+    NSInteger hour = [currentTime hour];
+    if (hour) {
+        if ((hour > 0 && hour < 4) || hour > 24) {
+            self.timeFrame = 0;
+        } else if (hour > 3 && hour < 8) {
+            self.timeFrame = 1;
+        } else if (hour > 7 && hour < 12) {
+            self.timeFrame = 2;
+        } else if (hour > 11 && hour < 16) {
+            self.timeFrame = 3;
+        } else if (hour > 15 && hour < 20) {
+            self.timeFrame = 4;
+        } else {
+            self.timeFrame = 5;
+        }
+    }
+}
+
+- (NSDateComponents *)currentTime
+{
+    //Get current time
+    NSDate* now = [NSDate date];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *dateComponents = [gregorian components:(NSHourCalendarUnit  | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:now];
+    return dateComponents;
+}
+
 
 @end
