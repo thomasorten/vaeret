@@ -19,9 +19,13 @@
 @property(assign) NSInteger currentTaskId;
 
 @property NSMutableArray *savedPlacesArray;
-@property NSMutableArray *cellInfoArray;
+@property NSMutableArray *collectionViewArray;
+@property NSMutableArray *dataArray;
+@property NSMutableArray *glyphsArray;
+@property NSArray *forecast;
 
-@property NSInteger timeFrame;
+@property NSInteger period;
+@property NSInteger selectedDay;
 
 @property (weak, nonatomic) IBOutlet UIView *searchPlaceView;
 @property (weak, nonatomic) IBOutlet UIView *findMeView;
@@ -40,6 +44,14 @@
 @property (weak, nonatomic) IBOutlet UILabel *weatherGridFourLabel;
 @property (weak, nonatomic) IBOutlet UILabel *weatherGridFiveLabel;
 @property (weak, nonatomic) IBOutlet UILabel *weatherGridSixLabel;
+
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridOneTempLabel;
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridTwoTempLabel;
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridThreeTempLabel;
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridFourTempLabel;
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridFiveTempLabel;
+@property (weak, nonatomic) IBOutlet UILabel *weatherGridSixTempLabel;
+
 
 @property CGRect initialTextFieldFrame;
 
@@ -64,16 +76,6 @@
 
     self.screenWidth = [[UIScreen mainScreen] bounds].size.width;
     self.screenHeight = [[UIScreen mainScreen] bounds].size.height;
-
-    [self.weatherGridOneLabel setText:@"\uf002"];
-    [self.weatherGridTwoLabel setText:@"\uf002"];
-    [self.weatherGridThreeLabel setText:@"\uf002"];
-    [self.weatherGridFourLabel setText:@"\uf002"];
-    [self.weatherGridFiveLabel setText:@"\uf002"];
-    [self.weatherGridSixLabel setText:@"\uf002"];
-
-    // Cells
-    self.cellInfoArray = [[NSMutableArray alloc] initWithArray:@[@{@"time": @"00 - 04"}, @{@"time": @"04 - 08"}, @{@"time": @"08 - 12"}, @{@"time": @"12 - 16"}, @{@"time": @"16 - 20"}, @{@"time": @"20 - 00"}]];
 
     // Constraints
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -129,6 +131,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    self.selectedDay = 0; // Today
     // Already saved a place?
     [self load];
 }
@@ -221,22 +224,87 @@
     }
 }
 
-- (void)callPlace
+- (void)callPlace:(NSString *)xmlUrl
 {
-        data = [[NSMutableArray alloc] init];
-        NSString *urlString = [NSString stringWithFormat:@"http://10.0.0.49:3000/weather/places?query={\"Stadnamn\":{\"$regex\":\"^%@\",\"$options\":\"i\"}}", self.placeTextField.text];
+        NSString *urlString = [NSString stringWithFormat:@"https://evening-gorge-8065.herokuapp.com/api/forecast?url=%@", xmlUrl];
         NSString *encodedUrlString = [urlString stringByAddingPercentEscapesUsingEncoding:
                                   NSUTF8StringEncoding];
         NSURL *url = [NSURL URLWithString:encodedUrlString];
         NSURLRequest *request = [NSURLRequest requestWithURL:url];
         [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *responseData, NSError *connectionError) {
             if (responseData) {
-                NSArray *contents = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:&connectionError];
-                [contents enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                    [data addObject:[NSDictionary dictionaryWithObjectsAndKeys: [obj objectForKey:@"N"],@"DisplayText", nil]];
-                }];
+                NSDictionary *contents = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:&connectionError];
+                [self setupForecast:[[NSArray alloc] initWithArray:contents[@"weatherdata"][@"forecast"][@"tabular"]]];
             }
         }];
+}
+
+-(void)setupForecast:(NSArray *)forecast
+{
+    NSMutableArray *tmpArray = [[NSMutableArray alloc] init];
+    NSMutableArray *dayOneArray = [[NSMutableArray alloc] init];
+    [tmpArray addObject:dayOneArray];
+    int day = 0;
+    for (NSDictionary *timeSpan in forecast) {
+        if (day == 7) {
+            break;
+        }
+        NSMutableDictionary *tmpDictionary = [[NSMutableDictionary alloc] initWithDictionary:timeSpan];
+        if ([timeSpan[@"period"] isEqualToString:@"0"]) {
+            [tmpDictionary setObject:@"00 - 06" forKey:@"time"];
+        } else if ([timeSpan[@"period"] isEqualToString:@"1"]) {
+            [tmpDictionary setObject:@"06 - 12" forKey:@"time"];
+        } else if ([timeSpan[@"period"] isEqualToString:@"2"]) {
+            [tmpDictionary setObject:@"12 - 18" forKey:@"time"];
+        } else {
+            [tmpDictionary setObject:@"18 - 00" forKey:@"time"];
+        }
+
+        [[tmpArray objectAtIndex:day] addObject:tmpDictionary];
+
+        // Setup weather icons
+        for (NSDictionary *glyph in self.glyphsArray) {
+            NSString *tmpString = timeSpan[@"symbol"][@"var"];
+            if ([tmpString rangeOfString:@"/"].location != NSNotFound) {
+                NSRange range = [tmpString rangeOfString:@"/"];
+                tmpString = [tmpString substringWithRange:NSMakeRange(range.location+1, tmpString.length-range.location-1)];
+            }
+            if ([tmpString rangeOfString:@"."].location != NSNotFound) {
+                NSRange rangeTwo = [tmpString rangeOfString:@"."];
+                tmpString = [tmpString substringWithRange:NSMakeRange(0, rangeTwo.location)];
+            }
+            if ([glyph[@"var"] isEqualToString:tmpString]) {
+                NSString *currentWeatherSymbol = glyph[@"unicode"];
+                [tmpDictionary setObject:currentWeatherSymbol forKey:@"unicode"];
+            }
+        }
+
+        // New day?
+        if ([timeSpan[@"period"] isEqualToString:@"3"] && day != 6) {
+            NSMutableArray *newDayArray = [[NSMutableArray alloc] init];
+            [tmpArray addObject:newDayArray];
+            day++;
+        }
+    }
+
+    self.forecast = (NSArray *)tmpArray;
+    // Cells
+    self.collectionViewArray = [[NSMutableArray alloc] initWithArray:[self.forecast objectAtIndex:0]];
+
+    [self.weatherGridOneLabel setText:[[self.forecast objectAtIndex:1] objectAtIndex:1][@"unicode"]];
+    [self.weatherGridOneTempLabel setText:[[self.forecast objectAtIndex:1] objectAtIndex:1][@"temperature"][@"value"]];
+    [self.weatherGridTwoLabel setText:[[self.forecast objectAtIndex:2] objectAtIndex:1][@"unicode"]];
+    [self.weatherGridTwoTempLabel setText:[[self.forecast objectAtIndex:2] objectAtIndex:1][@"temperature"][@"value"]];
+    [self.weatherGridThreeLabel setText:[[self.forecast objectAtIndex:3] objectAtIndex:1][@"unicode"]];
+    [self.weatherGridThreeTempLabel setText:[[self.forecast objectAtIndex:3] objectAtIndex:1][@"temperature"][@"value"]];
+    [self.weatherGridFourLabel setText:[[self.forecast objectAtIndex:4] objectAtIndex:1][@"unicode"]];
+    [self.weatherGridFourTempLabel setText:[[self.forecast objectAtIndex:4] objectAtIndex:1][@"temperature"][@"value"]];
+    [self.weatherGridFiveLabel setText:[[self.forecast objectAtIndex:5] objectAtIndex:1][@"unicode"]];
+    [self.weatherGridFiveTempLabel setText:[[self.forecast objectAtIndex:5] objectAtIndex:1][@"temperature"][@"value"]];
+    [self.weatherGridSixLabel setText:[[self.forecast objectAtIndex:6] objectAtIndex:1][@"unicode"]];
+    [self.weatherGridSixTempLabel setText:[[self.forecast objectAtIndex:6] objectAtIndex:1][@"temperature"][@"value"]];
+
+    [self.weatherCollectionView reloadData];
 }
 
 - (void)generateData
@@ -246,14 +314,20 @@
         //
         //
         NSError* err = nil;
-        data = [[NSMutableArray alloc] init];
+        self.dataArray = [[NSMutableArray alloc] init];
+        self.glyphsArray = [[NSMutableArray alloc] init];
         NSString *dataPath = [[NSBundle mainBundle] pathForResource:@"places" ofType:@"json"];
+        NSString *glyphsPath = [[NSBundle mainBundle] pathForResource:@"glyphs" ofType:@"json"];
         NSArray *contents = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:dataPath] options:kNilOptions error:&err];
+        NSArray *glyphContents = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:glyphsPath] options:kNilOptions error:&err];
         dispatch_async( dispatch_get_main_queue(), ^{
             // Add code here to update the UI/send notifications based on the
             // results of the background processing
             [contents enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                [data addObject:[NSDictionary dictionaryWithObjectsAndKeys: [obj objectForKey:@"N"], @"DisplayText", [obj objectForKey:@"T"], @"DisplaySubText", obj, @"CustomObject", nil]];
+                [self.dataArray addObject:[NSDictionary dictionaryWithObjectsAndKeys: [obj objectForKey:@"N"], @"DisplayText", [obj objectForKey:@"T"], @"DisplaySubText", obj, @"CustomObject", nil]];
+            }];
+            [glyphContents enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                [self.glyphsArray addObject:[NSDictionary dictionaryWithObjectsAndKeys: [obj objectForKey:@"var"], @"var", [[obj objectForKey:@"unicode"] substringFromIndex:1], @"unicode", [obj objectForKey:@"icon"], @"icon", nil]];
             }];
         });
     });
@@ -264,7 +338,7 @@
 - (NSArray *)dataForPopoverInTextField:(MPGTextField *)textField
 {
     if ([textField isEqual:self.placeTextField]) {
-        return data;
+        return self.dataArray;
     }
     else{
         return nil;
@@ -279,7 +353,9 @@
 - (void)textField:(MPGTextField *)textField didEndEditingWithSelection:(NSDictionary *)result
 {
         if ([textField isEqual:self.placeTextField]) {
-            [self save:textField.text];
+            [self save:result[@"CustomObject"]];
+            // Call place
+            [self callPlace:result[@"CustomObject"][@"U"]];
             [self initLoader];
         }
 }
@@ -380,20 +456,30 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section
 {
-    return [self.cellInfoArray count];
+    return [self.collectionViewArray count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     WeatherCollectionViewCell *weatherCell = [self.weatherCollectionView dequeueReusableCellWithReuseIdentifier:@"WeatherCell" forIndexPath:indexPath];
-    [weatherCell.weatherIcon812Label setText:@"\uf002"];
 
-    weatherCell.timeLabel.text = [NSString stringWithFormat:@"Kl. %@", [self.cellInfoArray objectAtIndex:indexPath.row][@"time"]];
+    [weatherCell.weatherIcon812Label setText:[self.collectionViewArray objectAtIndex:indexPath.row][@"unicode"]];
+
+    weatherCell.degreeLabel.text = [self.collectionViewArray objectAtIndex:indexPath.row][@"temperature"][@"value"];
+
+    NSString *minMaxRain = @"0 - 0";
+    if ([[self.collectionViewArray objectAtIndex:indexPath.row][@"precipitation"] objectForKey:@"minvalue"] != nil) {
+        minMaxRain = [NSString stringWithFormat:@"%@ - %@", [self.collectionViewArray objectAtIndex:indexPath.row][@"precipitation"][@"minvalue"], [self.collectionViewArray objectAtIndex:indexPath.row][@"precipitation"][@"maxvalue"]];
+    }
+
+    weatherCell.rainLabel.text = minMaxRain;
+
+    weatherCell.timeLabel.text = [NSString stringWithFormat:@"Kl. %@", [self.collectionViewArray objectAtIndex:indexPath.row][@"time"]];
 
     return weatherCell;
 }
 
-- (void)save:(NSString *)place
+- (void)save:(NSDictionary *)place
 {
     [self.savedPlacesArray addObject:place];
     if ([self.savedPlacesArray count] > 4) {
@@ -421,7 +507,9 @@
 
     } else {
         // Exists
-        self.placeTextField.text = [self.savedPlacesArray lastObject];
+        NSDictionary *lastPlaceSearched = [self.savedPlacesArray lastObject];
+        self.placeTextField.text = lastPlaceSearched[@"N"];
+        [self callPlace:lastPlaceSearched[@"U"]];
         // Show some stuff
         self.searchPlaceView.hidden = YES;
         self.titleLabel.hidden = YES;
@@ -441,18 +529,14 @@
     NSDateComponents *currentTime = [self currentTime];
     NSInteger hour = [currentTime hour];
     if (hour) {
-        if ((hour > 0 && hour < 4) || hour > 24) {
-            self.timeFrame = 0;
-        } else if (hour > 3 && hour < 8) {
-            self.timeFrame = 1;
-        } else if (hour > 7 && hour < 12) {
-            self.timeFrame = 2;
-        } else if (hour > 11 && hour < 16) {
-            self.timeFrame = 3;
-        } else if (hour > 15 && hour < 20) {
-            self.timeFrame = 4;
+        if (hour > 5 && hour < 12) {
+            self.period = 1;
+        } else if (hour > 11 && hour < 18) {
+            self.period = 2;
+        } else if (hour > 17 && hour < 00) {
+            self.period = 3;
         } else {
-            self.timeFrame = 5;
+            self.period = 0;
         }
     }
 }
