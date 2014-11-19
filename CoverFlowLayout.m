@@ -112,6 +112,7 @@
         transform = CATransform3DTranslate(transform, isLeft? -FLOW_OFFSET : FLOW_OFFSET, 0, 0);
         transform = CATransform3DRotate(transform, (isLeft? 1 : -1) * 45 * M_PI / 180, 0, 1, 0);
         attributes.zIndex = 0;
+        attributes.alpha = 0.3;
     }
     attributes.transform3D = transform;
 }

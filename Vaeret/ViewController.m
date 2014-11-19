@@ -13,6 +13,7 @@
 
 #define kLatestUpdatekey @"Latest Update"
 #define defaultSearchString @"Søk etter sted"
+#define defaultDayString @"I dag"
 
 @interface ViewController () <UITextViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
@@ -26,6 +27,7 @@
 
 @property NSInteger period;
 @property NSInteger selectedDay;
+@property NSInteger previousSelectedDay;
 
 @property (weak, nonatomic) IBOutlet UIView *searchPlaceView;
 @property (weak, nonatomic) IBOutlet UIView *findMeView;
@@ -58,6 +60,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *weatherGridFourDayButton;
 @property (weak, nonatomic) IBOutlet UIButton *weatherGridFiveDayButton;
 @property (weak, nonatomic) IBOutlet UIButton *weatherGridSixDayButton;
+
+@property (weak, nonatomic) IBOutlet UILabel *currentSelectedLabel;
 
 @property CGRect initialTextFieldFrame;
 
@@ -96,6 +100,10 @@
         make.centerX.equalTo(self.view);
         self.findMeCenterYConstraint = make.top.equalTo(self.searchPlaceView.mas_bottom);
     }];
+    [self.currentSelectedLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.view);
+        make.top.mas_equalTo(110);
+    }];
     [self.copyrightLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.view);
         make.bottom.equalTo(self.view.mas_bottom).with.offset(-30);
@@ -108,7 +116,7 @@
         make.width.mas_equalTo(self.screenWidth);
         make.height.mas_equalTo(self.screenHeight/2);
         make.centerX.equalTo(self.view);
-        make.centerY.equalTo(self.view).centerOffset(CGPointMake(0, -100));
+        make.centerY.equalTo(self.view).centerOffset(CGPointMake(0, -70));
     }];
     [self.cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(58);
@@ -138,6 +146,7 @@
 {
     [super viewDidAppear:animated];
     self.selectedDay = 0; // Today
+    self.previousSelectedDay = 0;
     // Already saved a place?
     [self load];
 }
@@ -295,8 +304,15 @@
 
         [dateFormatter setDateFormat:@"EEEE"];
         NSString *dayOfWeek = [dateFormatter stringFromDate:date];
-
         dayOfWeek = [dayOfWeek stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[dayOfWeek substringToIndex:1] capitalizedString]];
+
+        if (day == 0) {
+            dayOfWeek = @"I dag";
+        }
+
+        if (day == 1) {
+            dayOfWeek = @"I morgen";
+        }
 
         [tmpDictionary setObject:dayOfWeek forKey:@"day"];
 
@@ -451,6 +467,7 @@
         self.cancelButtonXConstraint.centerOffset(CGPointMake((self.placeTextField.frame.size.width/2)+10, 0));
 
         self.cancelButton.alpha = reverse ? 0 : 1;
+        self.currentSelectedLabel.alpha = reverse ? 0 : 1;
 
         [UIView animateWithDuration:0.2 animations:^{
             [self.view layoutIfNeeded];
@@ -459,6 +476,7 @@
     }];
 
     if (reverse) {
+        self.currentSelectedLabel.text = defaultDayString;
         [self performSelector:@selector(resetTextField) withObject:nil afterDelay:0.3];
         [self performSelector:@selector(animateWeatherViews:) withObject:[NSNumber numberWithBool:YES] afterDelay:0];
     } else {
@@ -508,7 +526,7 @@
 
     weatherCell.rainLabel.text = minMaxRain;
 
-    weatherCell.timeLabel.text = [NSString stringWithFormat:@"Kl. %@", [self.collectionViewArray objectAtIndex:indexPath.row][@"time"]];
+    weatherCell.timeLabel.text = [self.collectionViewArray objectAtIndex:indexPath.row][@"time"];
 
     return weatherCell;
 }
@@ -584,17 +602,54 @@
     return dateComponents;
 }
 
+- (void)changeDay:(int)day
+{
+    // Change data in collection view
+    [self.collectionViewArray removeAllObjects];
+    [self.collectionViewArray addObjectsFromArray:[self.forecast objectAtIndex:day]];
+
+    [self.weatherCollectionView reloadData];
+
+    [self.weatherCollectionView setContentOffset:CGPointZero animated:YES];
+
+    // Update data in tapped views
+    NSDictionary *prevItem = [self.forecast objectAtIndex:self.previousSelectedDay][0];
+
+    UIView *selectedView = [self.weatherGridView.subviews objectAtIndex:day-1];
+    UIButton *button = (UIButton *) [selectedView.subviews objectAtIndex:0];
+    UILabel *icon = (UILabel *) [selectedView.subviews objectAtIndex:1];
+    UILabel *degrees = (UILabel *) [selectedView.subviews objectAtIndex:2];
+
+    [button setTitle:prevItem[@"day"] forState:UIControlStateNormal];
+    degrees.text = prevItem[@"temperature"][@"value"];
+    icon.text = prevItem[@"unicode"];
+
+    self.previousSelectedDay = day;
+}
+
 - (IBAction)weatherGridOneDayButtonPressed:(id)sender {
+    self.currentSelectedLabel.text = self.weatherGridOneDayButton.titleLabel.text;
+    [self changeDay:1];
 }
 - (IBAction)weatherGridTwoDayButtonPressed:(id)sender {
+    self.currentSelectedLabel.text = self.weatherGridTwoDayButton.titleLabel.text;
+    [self changeDay:2];
 }
 - (IBAction)weatherGridThreeDayButtonPressed:(id)sender {
+    self.currentSelectedLabel.text = self.weatherGridThreeDayButton.titleLabel.text;
+    [self changeDay:3];
 }
 - (IBAction)weatherGridFourDayButtonPressed:(id)sender {
+    self.currentSelectedLabel.text = self.weatherGridFourDayButton.titleLabel.text;
+    [self changeDay:4];
 }
 - (IBAction)weatherGridFiveDayButtonPressed:(id)sender {
+    self.currentSelectedLabel.text = self.weatherGridFiveDayButton.titleLabel.text;
+    [self changeDay:5];
 }
 - (IBAction)weatherGridSixDayButtonPressed:(id)sender {
+    self.currentSelectedLabel.text = self.weatherGridSixDayButton.titleLabel.text;
+    [self changeDay:6];
 }
 
 
