@@ -52,6 +52,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *weatherGridFiveTempLabel;
 @property (weak, nonatomic) IBOutlet UILabel *weatherGridSixTempLabel;
 
+@property (weak, nonatomic) IBOutlet UIButton *weatherGridOneDayButton;
+@property (weak, nonatomic) IBOutlet UIButton *weatherGridTwoDayButton;
+@property (weak, nonatomic) IBOutlet UIButton *weatherGridThreeDayButton;
+@property (weak, nonatomic) IBOutlet UIButton *weatherGridFourDayButton;
+@property (weak, nonatomic) IBOutlet UIButton *weatherGridFiveDayButton;
+@property (weak, nonatomic) IBOutlet UIButton *weatherGridSixDayButton;
 
 @property CGRect initialTextFieldFrame;
 
@@ -279,6 +285,21 @@
             }
         }
 
+        // Setup dates
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:3600]];
+        [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"no_NB"]];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+
+        NSDate *date = [dateFormatter dateFromString:timeSpan[@"from"]];
+
+        [dateFormatter setDateFormat:@"EEEE"];
+        NSString *dayOfWeek = [dateFormatter stringFromDate:date];
+
+        dayOfWeek = [dayOfWeek stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[dayOfWeek substringToIndex:1] capitalizedString]];
+
+        [tmpDictionary setObject:dayOfWeek forKey:@"day"];
+
         // New day?
         if ([timeSpan[@"period"] isEqualToString:@"3"] && day != 6) {
             NSMutableArray *newDayArray = [[NSMutableArray alloc] init];
@@ -303,6 +324,19 @@
     [self.weatherGridFiveTempLabel setText:[[self.forecast objectAtIndex:5] objectAtIndex:1][@"temperature"][@"value"]];
     [self.weatherGridSixLabel setText:[[self.forecast objectAtIndex:6] objectAtIndex:1][@"unicode"]];
     [self.weatherGridSixTempLabel setText:[[self.forecast objectAtIndex:6] objectAtIndex:1][@"temperature"][@"value"]];
+
+    NSString *dayOneTitle = [[self.forecast objectAtIndex:1] objectAtIndex:1][@"day"];
+    [self.weatherGridOneDayButton setTitle:dayOneTitle forState:UIControlStateNormal];
+    NSString *dayTwoTitle = [[self.forecast objectAtIndex:2] objectAtIndex:1][@"day"];
+    [self.weatherGridTwoDayButton setTitle:dayTwoTitle forState:UIControlStateNormal];
+    NSString *dayThreeTitle = [[self.forecast objectAtIndex:3] objectAtIndex:1][@"day"];
+    [self.weatherGridThreeDayButton setTitle:dayThreeTitle forState:UIControlStateNormal];
+    NSString *dayFourTitle = [[self.forecast objectAtIndex:4] objectAtIndex:1][@"day"];
+    [self.weatherGridFourDayButton setTitle:dayFourTitle forState:UIControlStateNormal];
+    NSString *dayFiveTitle = [[self.forecast objectAtIndex:5] objectAtIndex:1][@"day"];
+    [self.weatherGridFiveDayButton setTitle:dayFiveTitle forState:UIControlStateNormal];
+    NSString *daySixTitle = [[self.forecast objectAtIndex:6] objectAtIndex:1][@"day"];
+    [self.weatherGridSixDayButton setTitle:daySixTitle forState:UIControlStateNormal];
 
     [self.weatherCollectionView reloadData];
 }
@@ -548,6 +582,19 @@
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *dateComponents = [gregorian components:(NSHourCalendarUnit  | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:now];
     return dateComponents;
+}
+
+- (IBAction)weatherGridOneDayButtonPressed:(id)sender {
+}
+- (IBAction)weatherGridTwoDayButtonPressed:(id)sender {
+}
+- (IBAction)weatherGridThreeDayButtonPressed:(id)sender {
+}
+- (IBAction)weatherGridFourDayButtonPressed:(id)sender {
+}
+- (IBAction)weatherGridFiveDayButtonPressed:(id)sender {
+}
+- (IBAction)weatherGridSixDayButtonPressed:(id)sender {
 }
 
 

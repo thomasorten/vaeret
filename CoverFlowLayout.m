@@ -17,10 +17,10 @@
 
 @implementation CoverFlowLayout
 
-#define ACTIVE_DISTANCE 750
-#define TRANSLATE_DISTANCE 187.5
+#define ACTIVE_DISTANCE 360
+#define TRANSLATE_DISTANCE 220
 #define ZOOM_FACTOR 0.2
-#define FLOW_OFFSET -187.5
+#define FLOW_OFFSET -220
 
 - (id)init
 {
@@ -29,6 +29,8 @@
     {
         self.screenWidth = [[UIScreen mainScreen] bounds].size.width;
         self.screenHeight = [[UIScreen mainScreen] bounds].size.height;
+
+        // 187.5
 
         self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         self.itemSize = (CGSize){297, 223};
@@ -92,10 +94,12 @@
         if (ABS(distance) < TRANSLATE_DISTANCE)
         {
             transform = CATransform3DTranslate(CATransform3DIdentity, (isLeft? - FLOW_OFFSET : FLOW_OFFSET)*ABS(distance/TRANSLATE_DISTANCE), 0, (1 - ABS(normalizedDistance)) * 40000 + (isLeft? 200 : 0));
+            attributes.alpha = 1;
         }
         else
         {
             transform = CATransform3DTranslate(CATransform3DIdentity, (isLeft? - FLOW_OFFSET : FLOW_OFFSET), 0, (1 - ABS(normalizedDistance)) * 40000 + (isLeft? 200 : 0));
+            attributes.alpha = 0.3;
         }
         transform.m34 = -1/(4.6777 * self.itemSize.width);
         CGFloat zoom = 1 + ZOOM_FACTOR*(1 - ABS(normalizedDistance));
